@@ -1,146 +1,120 @@
 """
-Platformer Game
+This is a Platformer Game built using the Arcade library in Python.
 """
+
+# Import the arcade library
 import arcade
 
-# Constants
+# Define constants for the screen dimensions
 SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
-# Constants for scaling sprites
+# Define constants for scaling the sprites in the game
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
-# Constants for movement speed of player
+# Define constants for the player's movement speed
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 
-
 class MyGame(arcade.Window):
     """
-    Main application class.
+    This is the main application class for our platformer game.
     """
 
     def __init__(self):
+        """
+        This is the constructor method which initializes the game window and game variables.
+        """
 
-        # Defines the dimensions of the window
+        # Call the parent class's constructor to set up the game window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
-
-        # The object of Tile Map
+        # Initialize the Tile Map object
         self.tile_map = None
 
-
-        # Our Scene Object
+        # Initialize the Scene object
         self.scene = None
 
-        # Separate variable that holds the player sprite
+        # Initialize the player sprite
         self.player_sprite = None
 
-        # Our physics engine
+        # Initialize the physics engine
         self.physics_engine = None
 
-        # A Camera that can be used for scrolling the screen
+        # Initialize the game and GUI cameras
         self.camera = None
-
-        # A Camera that can be used to draw GUI elements
         self.gui_camera = None
 
-        # Track the current state of what key is pressed
+        # Initialize the state of the keys pressed
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
         self.down_pressed = False
 
-        # Keep track of the score
+        # Initialize the score
         self.score = 0
 
-        # Load sounds
+        # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
+        # Set the background color of the game window
         arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
     def setup(self):
-        """Set up the game here. Call this function to restart the game."""
+        """
+        This method sets up the game. It is used to restart the game.
+        """
 
-        # Set up the Cameras
+        # Set up the game and GUI cameras
         self.camera = arcade.Camera(self.width, self.height)
         self.gui_camera = arcade.Camera(self.width, self.height)
 
-
-        # Name of map file to load
-
+        # Define the name of the map file to load
         map_name = ":resources:tiled_maps/map.json"
 
-
-
-        # Layer specific options are defined based on Layer names in a dictionary
-
-        # Doing this will make the SpriteList for the platforms layer
-
-        # use spatial hashing for detection.
-
+        # Define layer specific options in a dictionary
+        # This will enable spatial hashing for the platforms layer
         layer_options = {
-
             "Platforms": {
-
                 "use_spatial_hash": True,
-
             },
-
         }
 
-
-
-        # Read in the tiled map
-
+        # Load the tiled map
         self.tile_map = arcade.load_tilemap(map_name, TILE_SCALING, layer_options)
 
-
-
-        # Initialize Scene with our TileMap, this will automatically add all layers
-
-        # from the map as SpriteLists in the scene in the proper order.
-
+        # Initialize the Scene with our TileMap
+        # This will automatically add all layers from the map as SpriteLists in the scene
         self.scene = arcade.Scene.from_tilemap(self.tile_map)
 
-
-        # Keep track of the score
+        # Reset the score
         self.score = 0
 
-        # Set up the player, specifically placing it at these coordinates.
+        # Set up the player sprite and add it to the scene
         image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
         self.scene.add_sprite("Player", self.player_sprite)
 
-
-        # --- Other stuff
-
-        # Set the background color
-
+        # Set the background color if it is defined in the tile map
         if self.tile_map.background_color:
-
             arcade.set_background_color(self.tile_map.background_color)
 
-
-
-        # Create the 'physics engine'
-
+        # Create the physics engine
         self.physics_engine = arcade.PhysicsEnginePlatformer(
-
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
-
         )
 
-
     def on_draw(self):
-        """Render the screen."""
+        """
+        This method renders the screen.
+        """
 
         # Clear the screen to the background color
         self.clear()
@@ -148,29 +122,31 @@ class MyGame(arcade.Window):
         # Activate the game camera
         self.camera.use()
 
-
-        # Draw our Scene
-
+        # Draw the scene
         self.scene.draw()
-
 
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
     def update_player_speed(self):
+        """
+        This method updates the player's speed based on the keys pressed.
+        """
 
-        # Calculate speed based on the keys pressed
+        # Reset the player's speed
         self.player_sprite.change_x = 0
-        self.player_sprite.change_y = 0
 
+        # Update the player's speed based on the keys pressed
         if self.up_pressed:
-            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
         if self.left_pressed and not self.right_pressed:
+            # Update the player's horizontal speed based on the keys pressed
             self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
         elif self.right_pressed and not self.left_pressed:
             self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
 
-        # Draw our score on the screen, scrolling it with the viewport
+        # Draw the current score on the screen at the top left corner
         score_text = f"Score: {self.score}"
         arcade.draw_text(
             score_text,
@@ -181,30 +157,39 @@ class MyGame(arcade.Window):
         )
 
     def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed."""
+        """
+        This method is called whenever a key is pressed.
+        It updates the state of the keys and the player's speed.
+        """
 
+        # If the UP key is pressed, make the player jump if it can
         if key == arcade.key.UP:
             self.up_pressed = True
             if self.physics_engine.can_jump():
                 self.update_player_speed()
+        # If the LEFT key is pressed, make the player move left
         elif key == arcade.key.LEFT:
             self.left_pressed = True
             self.update_player_speed()
+        # If the RIGHT key is pressed, make the player move right
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
             self.update_player_speed()
 
-
-
     def on_key_release(self, key, modifiers):
-        """Called when the user releases a key."""
+        """
+        This method is called when the user releases a key.
+        It updates the state of the keys and the player's speed.
+        """
 
+        # If the UP or DOWN key is released, stop the player's vertical movement
         if key == arcade.key.UP:
             self.up_pressed = False
             self.update_player_speed()
         elif key == arcade.key.DOWN:
             self.down_pressed = False
             self.update_player_speed()
+        # If the LEFT or RIGHT key is released, stop the player's horizontal movement
         elif key == arcade.key.LEFT:
             self.left_pressed = False
             self.update_player_speed()
@@ -212,54 +197,75 @@ class MyGame(arcade.Window):
             self.right_pressed = False
             self.update_player_speed()
 
+        # If the LEFT or RIGHT key or the A or D key is released, stop the player's horizontal movement
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
         elif key == arcade.key.RIGHT or key == arcade.key.D:
             self.player_sprite.change_x = 0
 
     def center_camera_to_player(self):
+        """
+        This method centers the camera to the player.
+        It calculates the center of the screen based on the player's position and moves the camera to that position.
+        """
+
+        # Calculate the center of the screen based on the player's position
         screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
+        screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
+
+        # Make sure the camera does not go beyond the left or bottom edge of the screen
         if screen_center_x < 0:
             screen_center_x = 0
         if screen_center_y < 0:
             screen_center_y = 0
+
+        # Calculate the position to center the player
         player_centered = screen_center_x, screen_center_y
 
+        # Move the camera to the calculated position
         self.camera.move_to(player_centered)
 
     def on_update(self, delta_time):
-        """Movement and game logic"""
+        """
+        This method contains the game logic that is updated every frame.
+        It moves the player, checks for collisions with coins, and positions the camera.
+        """
 
-        # Move the player with the physics engine
+        # Move the player using the physics engine
         self.physics_engine.update()
 
-        # See if we hit any coins
+        # Check if the player has collided with any coins
         coin_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene["Coins"]
         )
 
-        # Loop through each coin we hit (if any) and remove it
+        # For each coin the player has hit, remove the coin, play a sound, and increase the score
         for coin in coin_hit_list:
-            # Remove the coin
+            # Remove the coin from the sprite lists
             coin.remove_from_sprite_lists()
-            # Play a sound
+            # Play the sound of collecting a coin
             arcade.play_sound(self.collect_coin_sound)
-            # Add one to the score
+            # Increase the score by one
             self.score += 1
 
-        # Position the camera
+        # Position the camera to center the player
         self.center_camera_to_player()
 
 
 def main():
-    """Main function"""
+    """
+    This is the main function that creates an instance of the game window, sets up the game, and starts the game loop.
+    """
+
+    # Create an instance of the game window
     window = MyGame()
+    # Set up the game
     window.setup()
+    # Start the game loop
     arcade.run()
 
 
+# This line checks if this file is the main module and runs the main function if it is
 if __name__ == "__main__":
     main()
+
