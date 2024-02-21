@@ -8,12 +8,12 @@ SCREEN_WIDTH = 1000
 SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
-# Constants used to scale our sprites from their original size
+# Constants for scaling sprites
 CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
-# Movement speed of player, in pixels per frame
+# Constants for movement speed of player
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
@@ -26,12 +26,11 @@ class MyGame(arcade.Window):
 
     def __init__(self):
 
-        # Call the parent class and set up the window
+        # Defines the dimensions of the window
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
 
 
-        # Our TileMap Object
-
+        # The object of Tile Map
         self.tile_map = None
 
 
@@ -49,6 +48,12 @@ class MyGame(arcade.Window):
 
         # A Camera that can be used to draw GUI elements
         self.gui_camera = None
+
+        # Track the current state of what key is pressed
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
 
         # Keep track of the score
         self.score = 0
@@ -152,6 +157,19 @@ class MyGame(arcade.Window):
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
+    def update_player_speed(self):
+
+        # Calculate speed based on the keys pressed
+        self.player_sprite.change_x = 0
+        self.player_sprite.change_y = 0
+
+        if self.up_pressed:
+            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+        if self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+
         # Draw our score on the screen, scrolling it with the viewport
         score_text = f"Score: {self.score}"
         arcade.draw_text(
@@ -165,17 +183,34 @@ class MyGame(arcade.Window):
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
-        if key == arcade.key.UP or key == arcade.key.W:
+        if key == arcade.key.UP:
+            self.up_pressed = True
             if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-                arcade.play_sound(self.jump_sound)
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
+                self.update_player_speed()
+        elif key == arcade.key.LEFT:
+            self.left_pressed = True
+            self.update_player_speed()
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = True
+            self.update_player_speed()
+
+
 
     def on_key_release(self, key, modifiers):
         """Called when the user releases a key."""
+
+        if key == arcade.key.UP:
+            self.up_pressed = False
+            self.update_player_speed()
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+            self.update_player_speed()
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+            self.update_player_speed()
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
+            self.update_player_speed()
 
         if key == arcade.key.LEFT or key == arcade.key.A:
             self.player_sprite.change_x = 0
