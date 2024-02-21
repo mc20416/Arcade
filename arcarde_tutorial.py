@@ -19,6 +19,7 @@ COIN_SCALING = 0.5
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
+ACCELERATION = 1
 
 class MyGame(arcade.Window):
     """
@@ -128,24 +129,6 @@ class MyGame(arcade.Window):
         # Activate the GUI camera before drawing GUI elements
         self.gui_camera.use()
 
-    def update_player_speed(self):
-        """
-        This method updates the player's speed based on the keys pressed.
-        """
-
-        # Reset the player's speed
-        self.player_sprite.change_x = 0
-
-        # Update the player's speed based on the keys pressed
-        if self.up_pressed:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-        if self.left_pressed and not self.right_pressed:
-            # Update the player's horizontal speed based on the keys pressed
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
-        elif self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED
-
         # Draw the current score on the screen at the top left corner
         score_text = f"Score: {self.score}"
         arcade.draw_text(
@@ -155,6 +138,29 @@ class MyGame(arcade.Window):
             arcade.csscolor.WHITE,
             18,
         )
+
+    def update_player_speed(self):
+        """
+        This method updates the player's speed based on the keys pressed.
+        """
+
+        # Update the player's speed based on the keys pressed
+        if self.up_pressed:
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+        else:
+
+            self.player_sprite.change_y = min(self.player_sprite.change_y, 0)
+
+        if self.left_pressed and not self.right_pressed:
+            # Update the player's horizontal speed based on the keys pressed
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+        elif self.right_pressed and not self.left_pressed:
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED    
+        elif self.right_pressed == self.left_pressed:
+            # Reset the player's speed
+            self.player_sprite.change_x = 0
+            
 
     def on_key_press(self, key, modifiers):
         """
@@ -186,9 +192,7 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP:
             self.up_pressed = False
             self.update_player_speed()
-        elif key == arcade.key.DOWN:
-            self.down_pressed = False
-            self.update_player_speed()
+
         # If the LEFT or RIGHT key is released, stop the player's horizontal movement
         elif key == arcade.key.LEFT:
             self.left_pressed = False
@@ -197,11 +201,8 @@ class MyGame(arcade.Window):
             self.right_pressed = False
             self.update_player_speed()
 
-        # If the LEFT or RIGHT key or the A or D key is released, stop the player's horizontal movement
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x = 0
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x = 0
+    def on_update(self):
+        print('hi')
 
     def center_camera_to_player(self):
         """
