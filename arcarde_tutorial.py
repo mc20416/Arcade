@@ -64,7 +64,7 @@ class MyGame(arcade.Window):
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
         # Set the background color of the game window
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.csscolor.DARK_GREY)
 
     def setup(self):
         """
@@ -139,18 +139,20 @@ class MyGame(arcade.Window):
             18,
         )
 
-    def update_player_speed(self):
+    def update_player_vertical_speed(self):
         """
         This method updates the player's speed based on the keys pressed.
         """
 
         # Update the player's speed based on the keys pressed
         if self.up_pressed:
+            self.up_pressed = False
             if self.physics_engine.can_jump():
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
         else:
-
             self.player_sprite.change_y = min(self.player_sprite.change_y, 0)
+    
+    def update_player_horizontal_speed(self):
 
         if self.left_pressed and not self.right_pressed:
             # Update the player's horizontal speed based on the keys pressed
@@ -172,15 +174,15 @@ class MyGame(arcade.Window):
         if key == arcade.key.UP:
             self.up_pressed = True
             if self.physics_engine.can_jump():
-                self.update_player_speed()
+                self.update_player_vertical_speed()
         # If the LEFT key is pressed, make the player move left
         elif key == arcade.key.LEFT:
             self.left_pressed = True
-            self.update_player_speed()
+            self.update_player_horizontal_speed()
         # If the RIGHT key is pressed, make the player move right
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
-            self.update_player_speed()
+            self.update_player_horizontal_speed()
 
     def on_key_release(self, key, modifiers):
         """
@@ -191,15 +193,15 @@ class MyGame(arcade.Window):
         # If the UP or DOWN key is released, stop the player's vertical movement
         if key == arcade.key.UP:
             self.up_pressed = False
-            self.update_player_speed()
+            self.update_player_vertical_speed()
 
         # If the LEFT or RIGHT key is released, stop the player's horizontal movement
         elif key == arcade.key.LEFT:
             self.left_pressed = False
-            self.update_player_speed()
+            self.update_player_horizontal_speed()
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
-            self.update_player_speed()
+            self.update_player_horizontal_speed()
 
     def on_update(self):
         print('hi')
