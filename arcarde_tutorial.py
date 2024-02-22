@@ -11,7 +11,7 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 1
+CHARACTER_SCALING = 0.5
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
@@ -19,7 +19,6 @@ COIN_SCALING = 0.5
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
-ACCELERATION = 1
 
 class MyGame(arcade.Window):
     """
@@ -59,6 +58,8 @@ class MyGame(arcade.Window):
         # Initialize the score
         self.score = 0
 
+        self.acceleration = 0
+
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -97,7 +98,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        image_source = ":resources:images/tiles/boxCrate_double.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
@@ -156,9 +157,9 @@ class MyGame(arcade.Window):
 
         if self.left_pressed and not self.right_pressed:
             # Update the player's horizontal speed based on the keys pressed
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED
+            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED*self.acceleration
         elif self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED    
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED*self.acceleration
         elif self.right_pressed == self.left_pressed:
             # Reset the player's speed
             self.player_sprite.change_x = 0
@@ -173,16 +174,13 @@ class MyGame(arcade.Window):
         # If the UP key is pressed, make the player jump if it can
         if key == arcade.key.UP:
             self.up_pressed = True
-            if self.physics_engine.can_jump():
-                self.update_player_vertical_speed()
         # If the LEFT key is pressed, make the player move left
         elif key == arcade.key.LEFT:
             self.left_pressed = True
-            self.update_player_horizontal_speed()
+
         # If the RIGHT key is pressed, make the player move right
         elif key == arcade.key.RIGHT:
             self.right_pressed = True
-            self.update_player_horizontal_speed()
 
     def on_key_release(self, key, modifiers):
         """
@@ -193,18 +191,13 @@ class MyGame(arcade.Window):
         # If the UP or DOWN key is released, stop the player's vertical movement
         if key == arcade.key.UP:
             self.up_pressed = False
-            self.update_player_vertical_speed()
 
         # If the LEFT or RIGHT key is released, stop the player's horizontal movement
-        elif key == arcade.key.LEFT:
+        if key == arcade.key.LEFT:
             self.left_pressed = False
-            self.update_player_horizontal_speed()
+
         elif key == arcade.key.RIGHT:
             self.right_pressed = False
-            self.update_player_horizontal_speed()
-
-    def on_update(self):
-        print('hi')
 
     def center_camera_to_player(self):
         """
@@ -233,6 +226,17 @@ class MyGame(arcade.Window):
         This method contains the game logic that is updated every frame.
         It moves the player, checks for collisions with coins, and positions the camera.
         """
+
+
+        if self.up_pressed and self.physics_engine.can_jump():
+            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+
+        if self.right_pressed:
+            self.acceleration += 0.01
+        elif self.left_pressed:
+            self.acceleration -= 0.01
+
+        self.update_player_horizontal_speed()
 
         # Move the player using the physics engine
         self.physics_engine.update()
