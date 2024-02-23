@@ -11,7 +11,7 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 0.5
+CHARACTER_SCALING = 1
 TILE_SCALING = 0.5
 COIN_SCALING = 0.5
 
@@ -102,7 +102,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = ":resources:images/tiles/boxCrate_double.png"
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        #":resources:images/tiles/boxCrate_double.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 128
         self.player_sprite.center_y = 128
