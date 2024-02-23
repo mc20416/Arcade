@@ -19,6 +19,8 @@ COIN_SCALING = 0.5
 PLAYER_MOVEMENT_SPEED = 10
 GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
+ACCELERATION_RATE = 0.05
+DECELERATION_RATE = 0.05
 
 class MyGame(arcade.Window):
     """
@@ -59,6 +61,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         self.acceleration = 0
+
+        self.frame_counter = 0
 
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
@@ -157,12 +161,12 @@ class MyGame(arcade.Window):
 
         if self.left_pressed and not self.right_pressed:
             # Update the player's horizontal speed based on the keys pressed
-            self.player_sprite.change_x = -PLAYER_MOVEMENT_SPEED*self.acceleration
+            self.player_sprite.change_x = max(-PLAYER_MOVEMENT_SPEED, min(PLAYER_MOVEMENT_SPEED*self.acceleration, PLAYER_MOVEMENT_SPEED*0.5*(self.acceleration-1)))
         elif self.right_pressed and not self.left_pressed:
-            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED*self.acceleration
+            self.player_sprite.change_x = min(PLAYER_MOVEMENT_SPEED, max(PLAYER_MOVEMENT_SPEED*self.acceleration, PLAYER_MOVEMENT_SPEED*0.5*(self.acceleration+1)))
         elif self.right_pressed == self.left_pressed:
             # Reset the player's speed
-            self.player_sprite.change_x = 0
+            self.player_sprite.change_x = PLAYER_MOVEMENT_SPEED*self.acceleration
             
 
     def on_key_press(self, key, modifiers):
@@ -188,7 +192,7 @@ class MyGame(arcade.Window):
         It updates the state of the keys and the player's speed.
         """
 
-        # If the UP or DOWN key is released, stop the player's vertical movement
+        # If the UP key is released, stop the player's vertical movement
         if key == arcade.key.UP:
             self.up_pressed = False
 
@@ -227,14 +231,21 @@ class MyGame(arcade.Window):
         It moves the player, checks for collisions with coins, and positions the camera.
         """
 
+        self.frame_counter += 1
 
         if self.up_pressed and self.physics_engine.can_jump():
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
-        if self.right_pressed:
-            self.acceleration += 0.01
-        elif self.left_pressed:
-            self.acceleration -= 0.01
+        if self.acceleration >= -1 and self.acceleration <= 1:
+            if self.right_pressed and not self.left_pressed:
+                self.acceleration = min(self.acceleration + ACCELERATION_RATE, 1)
+            elif self.left_pressed and not self.right_pressed:
+                self.acceleration = max(self.acceleration - ACCELERATION_RATE, -1)
+            else:
+                if self.acceleration < 0:
+                    self.acceleration = min(self.acceleration + DECELERATION_RATE, 0)
+                else:
+                    self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
 
         self.update_player_horizontal_speed()
 
