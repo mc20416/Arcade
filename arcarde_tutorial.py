@@ -62,8 +62,6 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
-        self.frame_counter = 0
-
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -144,19 +142,6 @@ class MyGame(arcade.Window):
             arcade.csscolor.WHITE,
             18,
         )
-
-    def update_player_vertical_speed(self):
-        """
-        This method updates the player's speed based on the keys pressed.
-        """
-
-        # Update the player's speed based on the keys pressed
-        if self.up_pressed:
-            self.up_pressed = False
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
-        else:
-            self.player_sprite.change_y = min(self.player_sprite.change_y, 0)
     
     def update_player_horizontal_speed(self):
 
@@ -232,16 +217,18 @@ class MyGame(arcade.Window):
         It moves the player, checks for collisions with coins, and positions the camera.
         """
 
-        self.frame_counter += 1
-
+        # Checks every frame for a jump input, changes player Y if player is able to jump
         if self.up_pressed and self.physics_engine.can_jump():
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
+        # Loop will only activate if acceleration is within the accepted parameters
         if self.acceleration >= -1 and self.acceleration <= 1:
+            # Left and right acceleration is changed if the correct input is given
             if self.right_pressed and not self.left_pressed:
                 self.acceleration = min(self.acceleration + ACCELERATION_RATE, 1)
             elif self.left_pressed and not self.right_pressed:
                 self.acceleration = max(self.acceleration - ACCELERATION_RATE, -1)
+            # This handles the deceleration if no input is given or if both left and right are pressed
             else:
                 if self.acceleration < 0:
                     self.acceleration = min(self.acceleration + DECELERATION_RATE, 0)
