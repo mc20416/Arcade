@@ -3,16 +3,65 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "industrial.tmx",
     "expandedProjectPaths": [
+        ".",
+        "maps"
     ],
     "fileStates": {
+        "industrial.tmx": {
+            "scale": 0.608,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 700.6578947368421,
+                "y": 702.3026315789474
+            }
+        },
+        "industrial_map.tmx": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -241.33333333333326,
+                "y": 13.333333333333371
+            }
+        },
+        "maps/industrial_map.tmx": {
+            "scale": 0.2633705357142857,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 0,
+                "y": 1.8984659716925307
+            }
+        },
+        "maps/platformerPack_industrial_tilesheet.tsx": {
+            "scaleInDock": 1
+        },
+        "platformerPack_industrial_tilesheet.tsx": {
+            "scaleInDock": 0.25,
+            "scaleInEditor": 1
+        }
     },
-    "map.height": 10,
-    "map.width": 10,
+    "last.imagePath": "//wbfp02.westlake.local/shomes/mc20416/Downloads/kenney_platformer-pack-industrial/Tilesheet",
+    "map.fixedSize": true,
+    "map.height": 20,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 70,
+    "map.tileWidth": 70,
+    "map.width": 20,
     "openFiles": [
+        "platformerPack_industrial_tilesheet.tsx",
+        "industrial.tmx"
     ],
     "project": "platformer_tutorial.tiled-project",
     "recentFiles": [
-    ]
+        "platformerPack_industrial_tilesheet.tsx",
+        "industrial.tmx",
+        "maps/industrial_map.tmx",
+        "industrial_map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 70,
+        "width": 70
+    }
 }

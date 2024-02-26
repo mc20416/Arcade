@@ -4,6 +4,7 @@ This is a Platformer Game built using the Arcade library in Python.
 
 # Import the arcade library
 import arcade
+import os
 
 # Define constants for the screen dimensions
 SCREEN_WIDTH = 1000
@@ -12,7 +13,7 @@ SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
 CHARACTER_SCALING = 1
-TILE_SCALING = 0.5
+TILE_SCALING = 1
 COIN_SCALING = 0.5
 
 # Define constants for the player's movement speed
@@ -21,6 +22,8 @@ GRAVITY = 1
 PLAYER_JUMP_SPEED = 20
 ACCELERATION_RATE = 0.05
 DECELERATION_RATE = 0.05
+
+MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
 class MyGame(arcade.Window):
     """
@@ -66,8 +69,8 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        # Set the background color of the game window
-        arcade.set_background_color(arcade.csscolor.DARK_GREY)
+        # Background image will be stored in this variable
+        self.background = None
 
     def setup(self):
         """
@@ -79,7 +82,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = ":resources:tiled_maps/map.json"
+        map_name = f"{MAIN_PATH}/industrial.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -115,6 +118,8 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
+        
+        self.background = arcade.load_texture(f"{MAIN_PATH}/factory_background.png")
 
     def on_draw(self):
         """
@@ -123,6 +128,9 @@ class MyGame(arcade.Window):
 
         # Clear the screen to the background color
         self.clear()
+
+        # Draw the background texture
+        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,  self.background)
 
         # Activate the game camera
         self.camera.use()
