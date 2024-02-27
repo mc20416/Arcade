@@ -12,14 +12,14 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 0.25
-TILE_SCALING = 0.25
+CHARACTER_SCALING = 1
+TILE_SCALING = 1
 COIN_SCALING = 0.5
 
 # Define constants for the player's movement speed
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 0.7
-PLAYER_JUMP_SPEED = 12
+PLAYER_JUMP_SPEED = 20
 ACCELERATION_RATE = 0.1
 DECELERATION_RATE = 0.1
 
@@ -254,9 +254,11 @@ class MyGame(arcade.Window):
             self.player_sprite, self.scene["Coins"]
         )
 
-        #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Don't Touch"]) != []:
-         #   self.player_sprite.center_x = 80
-          #  self.player_sprite.center_y = 256
+        #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Platforms"]) != []:
+         #   print("hhhh")
+          #  self.player_sprite.center_x -= self.player_sprite.center_x % 32
+
+        #print(self.player_sprite.center_x % 16)
 
         # For each coin the player has hit, remove the coin, play a sound, and increase the score
         for coin in coin_hit_list:
