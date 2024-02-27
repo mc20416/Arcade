@@ -3,12 +3,20 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "industrial.tmx",
+    "activeFile": "cave_game.tmx",
     "expandedProjectPaths": [
-        ".",
-        "maps"
+        "maps",
+        "."
     ],
     "fileStates": {
+        "cave_game.tmx": {
+            "scale": 0.125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2976,
+                "y": 796
+            }
+        },
         "industrial.tmx": {
             "scale": 0.608,
             "selectedLayer": 1,
@@ -39,6 +47,9 @@
         "platformerPack_industrial_tilesheet.tsx": {
             "scaleInDock": 0.25,
             "scaleInEditor": 1
+        },
+        "spritesheet_tiles.tsx": {
+            "scaleInDock": 1
         }
     },
     "last.imagePath": "//wbfp02.westlake.local/shomes/mc20416/Downloads/kenney_platformer-pack-industrial/Tilesheet",
@@ -50,12 +61,14 @@
     "map.width": 20,
     "openFiles": [
         "platformerPack_industrial_tilesheet.tsx",
-        "industrial.tmx"
+        "industrial.tmx",
+        "cave_game.tmx"
     ],
     "project": "platformer_tutorial.tiled-project",
     "recentFiles": [
         "platformerPack_industrial_tilesheet.tsx",
         "industrial.tmx",
+        "cave_game.tmx",
         "maps/industrial_map.tmx",
         "industrial_map.tmx"
     ],

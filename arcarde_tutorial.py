@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = f"{MAIN_PATH}/test_real.tmx"
+        map_name = f"{MAIN_PATH}/cave_game.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -103,8 +103,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = f"{MAIN_PATH}/black_square.png"
-        #":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        #image_source = f"{MAIN_PATH}/black_square.png"
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         #":resources:images/tiles/boxCrate_double.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 80
