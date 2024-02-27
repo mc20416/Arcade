@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = f"{MAIN_PATH}/industrial.tmx"
+        map_name = f"{MAIN_PATH}/cave_game.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -119,7 +119,7 @@ class MyGame(arcade.Window):
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
         
-        self.background = arcade.load_texture(f"{MAIN_PATH}/factory_background.png")
+        #self.background = arcade.load_texture(f"{MAIN_PATH}/factory_background.png")
 
     def on_draw(self):
         """
