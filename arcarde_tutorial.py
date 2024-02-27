@@ -12,7 +12,7 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 0.25
+CHARACTER_SCALING = 0.5
 TILE_SCALING = 0.25
 COIN_SCALING = 0.5
 
@@ -69,7 +69,7 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        arcade.set_background_color(arcade.csscolor.PURPLE)
+        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
 
 
     def setup(self):
@@ -253,6 +253,10 @@ class MyGame(arcade.Window):
         coin_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene["Coins"]
         )
+
+        if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Don't Touch"]) != []:
+            self.player_sprite.center_x = 80
+            self.player_sprite.center_y = 256
 
         # For each coin the player has hit, remove the coin, play a sound, and increase the score
         for coin in coin_hit_list:
