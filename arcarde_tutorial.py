@@ -12,16 +12,16 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 1
-TILE_SCALING = 1
+CHARACTER_SCALING = 0.25
+TILE_SCALING = 0.25
 COIN_SCALING = 0.5
 
 # Define constants for the player's movement speed
-PLAYER_MOVEMENT_SPEED = 10
-GRAVITY = 1
-PLAYER_JUMP_SPEED = 20
+PLAYER_MOVEMENT_SPEED = 5
+GRAVITY = 0.7
+PLAYER_JUMP_SPEED = 12
 ACCELERATION_RATE = 0.05
-DECELERATION_RATE = 0.05
+DECELERATION_RATE = 0.1
 
 MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
@@ -69,8 +69,8 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        # Background image will be stored in this variable
-        self.background = None
+        arcade.set_background_color(arcade.csscolor.PURPLE)
+
 
     def setup(self):
         """
@@ -82,7 +82,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = f"{MAIN_PATH}/cave_game.tmx"
+        map_name = f"{MAIN_PATH}/test_real.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -103,11 +103,12 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        image_source = f"{MAIN_PATH}/black_square.png"
+        #":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         #":resources:images/tiles/boxCrate_double.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
-        self.player_sprite.center_x = 128
-        self.player_sprite.center_y = 128
+        self.player_sprite.center_x = 80
+        self.player_sprite.center_y = 256
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Set the background color if it is defined in the tile map
@@ -130,7 +131,7 @@ class MyGame(arcade.Window):
         self.clear()
 
         # Draw the background texture
-        arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT,  self.background)
+        #arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # Activate the game camera
         self.camera.use()
@@ -208,8 +209,8 @@ class MyGame(arcade.Window):
         screen_center_y = self.player_sprite.center_y - (self.camera.viewport_height / 2)
 
         # Make sure the camera does not go beyond the left or bottom edge of the screen
-        if screen_center_x < 0:
-            screen_center_x = 0
+        if screen_center_x < 32:
+            screen_center_x = 32
         if screen_center_y < 0:
             screen_center_y = 0
 
