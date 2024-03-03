@@ -12,14 +12,14 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 1
-TILE_SCALING = 1
+CHARACTER_SCALING = 0.5
+TILE_SCALING = 0.25
 COIN_SCALING = 0.5
 
 # Define constants for the player's movement speed
 PLAYER_MOVEMENT_SPEED = 5
 GRAVITY = 0.7
-PLAYER_JUMP_SPEED = 20
+PLAYER_JUMP_SPEED = 12
 ACCELERATION_RATE = 0.1
 DECELERATION_RATE = 0.1
 
@@ -65,6 +65,12 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
+        # Jumping textures
+        self.jumping_textures = []
+        #for i in range (1,8):
+
+
+
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -82,7 +88,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = f"{MAIN_PATH}/test_real.tmx"
+        map_name = f"{MAIN_PATH}/cave_game.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -103,8 +109,8 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = f"{MAIN_PATH}/black_square.png"
-        #image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
+        #image_source = f"{MAIN_PATH}/black_square.png"
+        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
         #":resources:images/tiles/boxCrate_double.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 80
@@ -119,8 +125,6 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(
             self.player_sprite, gravity_constant=GRAVITY, walls=self.scene["Platforms"]
         )
-        
-        #self.background = arcade.load_texture(f"{MAIN_PATH}/factory_background.png")
 
     def on_draw(self):
         """
@@ -129,9 +133,6 @@ class MyGame(arcade.Window):
 
         # Clear the screen to the background color
         self.clear()
-
-        # Draw the background texture
-        #arcade.draw_lrwh_rectangle_textured(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)
 
         # Activate the game camera
         self.camera.use()
@@ -254,11 +255,12 @@ class MyGame(arcade.Window):
             self.player_sprite, self.scene["Coins"]
         )
 
-        #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Platforms"]) != []:
-         #   print("hhhh")
-          #  self.player_sprite.center_x -= self.player_sprite.center_x % 32
+        if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Don't Touch"]) != []:
+            self.player_sprite.center_x = 80
+            self.player_sprite.center_y = 256
 
-        #print(self.player_sprite.center_x % 16)
+        #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Platforms"]) != []:
+            #self.player_sprite.center_x -= self.player_sprite.center_x % 32
 
         # For each coin the player has hit, remove the coin, play a sound, and increase the score
         for coin in coin_hit_list:
