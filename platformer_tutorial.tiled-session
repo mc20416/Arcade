@@ -5,16 +5,16 @@
     },
     "activeFile": "cave_game.tmx",
     "expandedProjectPaths": [
-        "maps",
-        "."
+        ".",
+        "maps"
     ],
     "fileStates": {
         "cave_game.tmx": {
-            "scale": 0.125,
-            "selectedLayer": 0,
+            "scale": 0.25,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 3152,
-                "y": 1820
+                "x": 9264,
+                "y": 1400
             }
         },
         "industrial.tmx": {
@@ -49,7 +49,7 @@
             "scaleInEditor": 1
         },
         "spritesheet_tiles.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 0.25,
             "scaleInEditor": 1
         }
     },
@@ -61,16 +61,15 @@
     "map.tileWidth": 70,
     "map.width": 20,
     "openFiles": [
-        "platformerPack_industrial_tilesheet.tsx",
-        "industrial.tmx",
-        "cave_game.tmx"
+        "cave_game.tmx",
+        "spritesheet_tiles.tsx"
     ],
     "project": "platformer_tutorial.tiled-project",
     "recentFiles": [
+        "spritesheet_tiles.tsx",
+        "cave_game.tmx",
         "industrial.tmx",
         "platformerPack_industrial_tilesheet.tsx",
-        "cave_game.tmx",
-        "spritesheet_tiles.tsx",
         "maps/industrial_map.tmx",
         "industrial_map.tmx"
     ],
