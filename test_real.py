@@ -12,7 +12,7 @@ SCREEN_HEIGHT = 650
 SCREEN_TITLE = "Platformer"
 
 # Define constants for scaling the sprites in the game
-CHARACTER_SCALING = 0.5
+CHARACTER_SCALING = 0.25
 TILE_SCALING = 0.25
 COIN_SCALING = 0.5
 
@@ -65,9 +65,13 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
-        # Jumping textures
-        self.jumping_textures = []
-        #for i in range (1,8):
+        '''
+        self.squish_one = f"{MAIN_PATH}/squish_1"
+        self.squish_two = 
+        self.squish_three =
+        self.squish_four =
+        self.squish_five =
+        '''
 
 
 
@@ -88,7 +92,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.Camera(self.width, self.height)
 
         # Define the name of the map file to load
-        map_name = f"{MAIN_PATH}/cave_game.tmx"
+        map_name = f"{MAIN_PATH}/test_real.tmx"
 
         # Define layer specific options in a dictionary
         # This will enable spatial hashing for the platforms layer
@@ -109,9 +113,7 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        #image_source = f"{MAIN_PATH}/black_square.png"
-        image_source = ":resources:images/animated_characters/female_adventurer/femaleAdventurer_idle.png"
-        #":resources:images/tiles/boxCrate_double.png"
+        image_source = f"{MAIN_PATH}/squish_1.png"
         self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
         self.player_sprite.center_x = 80
         self.player_sprite.center_y = 256
@@ -254,10 +256,6 @@ class MyGame(arcade.Window):
         coin_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene["Coins"]
         )
-
-        if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Don't Touch"]) != []:
-            self.player_sprite.center_x = 80
-            self.player_sprite.center_y = 256
 
         #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Platforms"]) != []:
             #self.player_sprite.center_x -= self.player_sprite.center_x % 32

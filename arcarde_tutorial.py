@@ -65,6 +65,14 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
+        '''
+        self.squish_one = f"{MAIN_PATH}/squish_1"
+        self.squish_two = 
+        self.squish_three =
+        self.squish_four =
+        self.squish_five =
+        '''
+
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
