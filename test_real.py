@@ -35,9 +35,9 @@ def load_texture_pair(filename):
 
 class PlayerCharacter(arcade.Sprite):
     
-    def ___innit___(self):
+    def __init__(self):
 
-        super().__innit__()
+        super().__init__()
 
         self.jumping = False
 
@@ -47,13 +47,16 @@ class PlayerCharacter(arcade.Sprite):
             self.jump_textures.append(texture)
 
         # Set the initial texture
-        self.texture = self.jump_textures[0]
+        self.texture = self.jump_textures[0][0]
 
         self.hit_box = self.texture.hit_box_points
+
+        self.scale = CHARACTER_SCALING
 
     def update_animation(self, delta_time: float = 1 / 60):
         if False:
             print('g')
+
 
 class MyGame(arcade.Window):
     """
