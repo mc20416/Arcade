@@ -25,13 +25,12 @@ DECELERATION_RATE = 0.1
 
 MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
-def load_texture_pair(filename):
+def load_texture(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
-    return [arcade.load_texture(filename),
-        arcade.load_texture(filename, flipped_horizontally=True),
-]
+    return arcade.load_texture(filename),
+
 
 class PlayerCharacter(arcade.Sprite):
     
@@ -40,10 +39,11 @@ class PlayerCharacter(arcade.Sprite):
         super().__init__()
 
         self.jumping = False
+        self.jump_state = 1
 
         self.jump_textures = []
         for i in range(1, 6):
-            texture = load_texture_pair(f"{MAIN_PATH}/squish_{i}.png")
+            texture = load_texture(f"{MAIN_PATH}/squish_{i}.png")
             self.jump_textures.append(texture)
 
         # Set the initial texture
@@ -54,8 +54,12 @@ class PlayerCharacter(arcade.Sprite):
         self.scale = CHARACTER_SCALING
 
     def update_animation(self, delta_time: float = 1 / 60):
-        if False:
-            print('g')
+        if self.change_y != 0:
+            if self.jump_state < 7:
+                self.jump_state += 1
+                self.texture = self.jump_textures[0][self.jump_state]
+            #else:
+                #self.jump_state = 1
 
 
 class MyGame(arcade.Window):
@@ -268,6 +272,8 @@ class MyGame(arcade.Window):
                     self.acceleration = min(self.acceleration + DECELERATION_RATE, 0)
                 else:
                     self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
+        
+        self.scene.update_animation(delta_time)
 
         self.update_player_horizontal_speed()
 
