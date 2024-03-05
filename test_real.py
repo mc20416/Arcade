@@ -25,15 +25,15 @@ DECELERATION_RATE = 0.1
 
 MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
-def load_texture(filename):
+def load_texture_pair(filename):
     """
     Load a texture pair, with the second being a mirror image.
     """
-    return [
-        arcade.load_texture(filename),
-    ]
+    return [arcade.load_texture(filename),
+        arcade.load_texture(filename, flipped_horizontally=True),
+]
 
-class PlayerCharacter(arcade.sprite):
+class PlayerCharacter(arcade.Sprite):
     
     def ___innit___(self):
 
@@ -43,11 +43,11 @@ class PlayerCharacter(arcade.sprite):
 
         self.jump_textures = []
         for i in range(1, 6):
-            texture = load_texture(f"{MAIN_PATH}_squish{i}.png")
+            texture = load_texture_pair(f"{MAIN_PATH}/squish_{i}.png")
             self.jump_textures.append(texture)
 
         # Set the initial texture
-        self.texture = self.squish_1
+        self.texture = self.jump_textures[0]
 
         self.hit_box = self.texture.hit_box_points
 
@@ -95,18 +95,6 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
-        self.squish_1 = f"{MAIN_PATH}/squish_1"
-        self.squish_2 = f"{MAIN_PATH}/squish_2"
-        self.squish_3 = f"{MAIN_PATH}/squish_3"
-        self.squish_4 = f"{MAIN_PATH}/squish_4"
-        self.squish_5 = f"{MAIN_PATH}/squish_5"
-        self.squish_6 = f"{MAIN_PATH}/squish_6"
-
-        # Set the initial texture
-        self.texture = self.squish_1
-
-        self.hit_box = self.texture.hit_box_points
-
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -145,7 +133,6 @@ class MyGame(arcade.Window):
         self.score = 0
 
         # Set up the player sprite and add it to the scene
-        image_source = f"{MAIN_PATH}/squish_1.png"
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 80
         self.player_sprite.center_y = 256
