@@ -25,6 +25,36 @@ DECELERATION_RATE = 0.1
 
 MAIN_PATH = os.path.dirname(os.path.abspath(__file__))
 
+def load_texture(filename):
+    """
+    Load a texture pair, with the second being a mirror image.
+    """
+    return [
+        arcade.load_texture(filename),
+    ]
+
+class PlayerCharacter(arcade.sprite):
+    
+    def ___innit___(self):
+
+        super().__innit__()
+
+        self.jumping = False
+
+        self.jump_textures = []
+        for i in range(1, 6):
+            texture = load_texture(f"{MAIN_PATH}_squish{i}.png")
+            self.jump_textures.append(texture)
+
+        # Set the initial texture
+        self.texture = self.squish_1
+
+        self.hit_box = self.texture.hit_box_points
+
+    def update_animation(self, delta_time: float = 1 / 60):
+        if False:
+            print('g')
+
 class MyGame(arcade.Window):
     """
     This is the main application class for our platformer game.
@@ -65,15 +95,17 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
-        '''
-        self.squish_one = f"{MAIN_PATH}/squish_1"
-        self.squish_two = 
-        self.squish_three =
-        self.squish_four =
-        self.squish_five =
-        '''
+        self.squish_1 = f"{MAIN_PATH}/squish_1"
+        self.squish_2 = f"{MAIN_PATH}/squish_2"
+        self.squish_3 = f"{MAIN_PATH}/squish_3"
+        self.squish_4 = f"{MAIN_PATH}/squish_4"
+        self.squish_5 = f"{MAIN_PATH}/squish_5"
+        self.squish_6 = f"{MAIN_PATH}/squish_6"
 
+        # Set the initial texture
+        self.texture = self.squish_1
 
+        self.hit_box = self.texture.hit_box_points
 
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
@@ -114,7 +146,7 @@ class MyGame(arcade.Window):
 
         # Set up the player sprite and add it to the scene
         image_source = f"{MAIN_PATH}/squish_1.png"
-        self.player_sprite = arcade.Sprite(image_source, CHARACTER_SCALING)
+        self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 80
         self.player_sprite.center_y = 256
         self.scene.add_sprite("Player", self.player_sprite)
@@ -271,7 +303,6 @@ class MyGame(arcade.Window):
 
         # Position the camera to center the player
         self.center_camera_to_player()
-
 
 def main():
     """
