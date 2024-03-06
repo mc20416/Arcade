@@ -57,19 +57,20 @@ class PlayerCharacter(arcade.Sprite):
 
         self.up_pressed = False
 
+        self.jumping = False
+
     def update_animation(self, delta_time: float = 1 / 60):
         print(self.jump_state)
-        if self.up_pressed and not self.down:
+        if self.up_pressed:
+            self.jumping = True
+        print(self.jumping)
+        print(self.down)
+        if self.jumping and self.down != True:
             if self.jump_state < 12:
-                self.texture = self.jump_textures[self.jump_state-1][0]
                 self.jump_state += 1
-
-
-        #elif self.jump_state == 7 or self.down:
-         #   self.down =  True
-          #  if self.jump_state > 1:
-           #     self.jump_state -= 1
-            #    self.texture = self.jump_textures[self.jump_state-1][0]
+                self.texture = self.jump_textures[self.jump_state-1][0]
+            elif self.jump_state == 12:
+                self.down = True
         elif self.change_y < 0:
             self.down = False
             self.jump_state = 1
