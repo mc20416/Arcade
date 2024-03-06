@@ -42,7 +42,7 @@ class PlayerCharacter(arcade.Sprite):
         self.jump_state = 1
 
         self.jump_textures = []
-        for i in range(1, 6):
+        for i in range(1, 7):
             texture = load_texture(f"{MAIN_PATH}/squish_{i}.png")
             self.jump_textures.append(texture)
 
@@ -53,13 +53,25 @@ class PlayerCharacter(arcade.Sprite):
 
         self.scale = CHARACTER_SCALING
 
+        self.down = False
+
     def update_animation(self, delta_time: float = 1 / 60):
-        if self.change_y != 0:
+        if window.up_pressed :
+            self.down = False
             if self.jump_state < 7:
+                self.texture = self.jump_textures[self.jump_state-1][0]
                 self.jump_state += 1
-                self.texture = self.jump_textures[0][self.jump_state]
-            #else:
-                #self.jump_state = 1
+                if self.jump_state == 7:
+                    if self.jump_state > 1:
+                        self.jump_state -= 1
+                        self.texture = self.jump_textures[self.jump_state-1][0]
+            elif self.jump_state == 7:
+                self.down =  True
+                if self.jump_state > 1:
+                    self.jump_state -= 1
+                    self.texture = self.jump_textures[self.jump_state-1][0]
+        elif self.change_y < 0:
+            self.jump_state = 1
 
 
 class MyGame(arcade.Window):
@@ -102,6 +114,8 @@ class MyGame(arcade.Window):
 
         self.acceleration = 0
 
+        self.frame = 0
+
         # Load the sound effects
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
@@ -142,7 +156,7 @@ class MyGame(arcade.Window):
         # Set up the player sprite and add it to the scene
         self.player_sprite = PlayerCharacter()
         self.player_sprite.center_x = 80
-        self.player_sprite.center_y = 256
+        self.player_sprite.center_y = 96
         self.scene.add_sprite("Player", self.player_sprite)
 
         # Set the background color if it is defined in the tile map
@@ -255,8 +269,11 @@ class MyGame(arcade.Window):
         It moves the player, checks for collisions with coins, and positions the camera.
         """
 
+        # Updates the fram counter
+        self.frame += 1
+
         # Checks every frame for a jump input, changes player Y if player is able to jump
-        if self.up_pressed and self.physics_engine.can_jump():
+        if self.up_pressed and self.physics_engine.can_jump() and PlayerCharacter.down:
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         # Loop will only activate if acceleration is within the accepted parameters
