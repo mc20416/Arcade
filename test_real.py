@@ -55,8 +55,8 @@ class PlayerCharacter(arcade.Sprite):
 
         self.down = False
 
-    def update_animation(self, delta_time: float = 1 / 60):
-        if window.up_pressed :
+    def update_animation(self, up_pressed, delta_time: float = 1 / 60):
+        if up_pressed:
             self.down = False
             if self.jump_state < 7:
                 self.texture = self.jump_textures[self.jump_state-1][0]
@@ -273,7 +273,7 @@ class MyGame(arcade.Window):
         self.frame += 1
 
         # Checks every frame for a jump input, changes player Y if player is able to jump
-        if self.up_pressed and self.physics_engine.can_jump() and PlayerCharacter.down:
+        if self.up_pressed and self.physics_engine.can_jump() and self.player_sprite.down:
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         # Loop will only activate if acceleration is within the accepted parameters
@@ -290,7 +290,7 @@ class MyGame(arcade.Window):
                 else:
                     self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
         
-        self.scene.update_animation(delta_time)
+        self.scene.update_animation(delta_time, self.up_pressed)
 
         self.update_player_horizontal_speed()
 
