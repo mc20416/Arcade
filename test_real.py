@@ -290,7 +290,7 @@ class MyGame(arcade.Window):
                 else:
                     self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
         
-        self.scene.update_animation(delta_time, self.up_pressed)
+        self.scene.update_animation(self.up_pressed, delta_time)
 
         self.update_player_horizontal_speed()
 
