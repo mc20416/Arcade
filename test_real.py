@@ -42,7 +42,7 @@ class PlayerCharacter(arcade.Sprite):
         self.jump_state = 1
 
         self.jump_textures = []
-        for i in range(1, 7):
+        for i in range(1, 13):
             texture = load_texture(f"{MAIN_PATH}/squish_{i}.png")
             self.jump_textures.append(texture)
 
@@ -55,22 +55,23 @@ class PlayerCharacter(arcade.Sprite):
 
         self.down = False
 
-    def update_animation(self, up_pressed, delta_time: float = 1 / 60):
-        if up_pressed:
-            self.down = False
-            if self.jump_state < 7:
+        self.up_pressed = False
+
+    def update_animation(self, delta_time: float = 1 / 60):
+        print(self.jump_state)
+        if self.up_pressed and not self.down:
+            if self.jump_state < 12:
                 self.texture = self.jump_textures[self.jump_state-1][0]
                 self.jump_state += 1
-                if self.jump_state == 7:
-                    if self.jump_state > 1:
-                        self.jump_state -= 1
-                        self.texture = self.jump_textures[self.jump_state-1][0]
-            elif self.jump_state == 7:
-                self.down =  True
-                if self.jump_state > 1:
-                    self.jump_state -= 1
-                    self.texture = self.jump_textures[self.jump_state-1][0]
+
+
+        #elif self.jump_state == 7 or self.down:
+         #   self.down =  True
+          #  if self.jump_state > 1:
+           #     self.jump_state -= 1
+            #    self.texture = self.jump_textures[self.jump_state-1][0]
         elif self.change_y < 0:
+            self.down = False
             self.jump_state = 1
 
 
@@ -106,7 +107,6 @@ class MyGame(arcade.Window):
         # Initialize the state of the keys pressed
         self.left_pressed = False
         self.right_pressed = False
-        self.up_pressed = False
         self.down_pressed = False
 
         # Initialize the score
@@ -215,7 +215,7 @@ class MyGame(arcade.Window):
 
         # If the UP key is pressed, make the player jump if it can
         if key == arcade.key.UP:
-            self.up_pressed = True
+            self.player_sprite.up_pressed = True
         # If the LEFT key is pressed, make the player move left
         elif key == arcade.key.LEFT:
             self.left_pressed = True
@@ -232,7 +232,7 @@ class MyGame(arcade.Window):
 
         # If the UP key is released, stop the player's vertical movement
         if key == arcade.key.UP:
-            self.up_pressed = False
+            self.player_sprite.up_pressed = False
 
         # If the LEFT or RIGHT key is released, stop the player's horizontal movement
         if key == arcade.key.LEFT:
@@ -273,7 +273,7 @@ class MyGame(arcade.Window):
         self.frame += 1
 
         # Checks every frame for a jump input, changes player Y if player is able to jump
-        if self.up_pressed and self.physics_engine.can_jump() and self.player_sprite.down:
+        if self.player_sprite.up_pressed and self.physics_engine.can_jump() and self.player_sprite.down:
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         # Loop will only activate if acceleration is within the accepted parameters
@@ -290,7 +290,7 @@ class MyGame(arcade.Window):
                 else:
                     self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
         
-        self.scene.update_animation(self.up_pressed, delta_time)
+        self.scene.update_animation(delta_time)
 
         self.update_player_horizontal_speed()
 
@@ -333,4 +333,3 @@ def main():
 # This line checks if this file is the main module and runs the main function if it is
 if __name__ == "__main__":
     main()
-
