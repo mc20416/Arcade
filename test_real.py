@@ -70,12 +70,24 @@ class PlayerCharacter(arcade.Sprite):
             if self.jump_state <= 6 and self.change_y == 0:
                 self.jump_state += 1
                 self.texture = self.jump_textures[self.jump_state - 1][0]   
-                self.hit_box = self.texture.hit_box_points
+                set_hit_box = []
+                for i in range(0, len(self.texture.hit_box_points)):
+                    set_hit_box.append(list(self.texture.hit_box_points[i]))
+                print(set_hit_box)
+                set_hit_box[0][0] = set_hit_box[3][0] = -64
+                set_hit_box[1][0] = set_hit_box[2][0] = 64
+                self.hit_box = tuple(set_hit_box)
         elif self.change_y != 0:
             self.down = False
             self.jump_state = 1
             self.texture = self.jump_textures[self.jump_state - 1][0]
-            self.hit_box = self.texture.hit_box_points
+            set_hit_box = []
+            for i in range(0, len(self.texture.hit_box_points)):
+                set_hit_box.append(list(self.texture.hit_box_points[i]))
+            print(set_hit_box)
+            set_hit_box[0][0] = set_hit_box[3][0] = -64
+            set_hit_box[1][0] = set_hit_box[2][0] = 64
+            self.hit_box = tuple(set_hit_box)
 
 
 class MyGame(arcade.Window):
@@ -322,8 +334,6 @@ class MyGame(arcade.Window):
 
         # Position the camera to center the player
         self.center_camera_to_player()
-
-        print(self.player_sprite.center_x)
 
 def main():
     """
