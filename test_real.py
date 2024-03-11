@@ -66,13 +66,6 @@ class PlayerCharacter(arcade.Sprite):
         if self.jump_state == 6:
             self.change_y = PLAYER_JUMP_SPEED
             self.jump_state = 1
-        tile_hit_list = arcade.check_for_collision_with_list(
-            self, self.scene["Platforms"]
-        )
-        
-        if len(tile_hit_list) == 1 and (self.center_x % 32 == 1 or self.center_x % 32 == 31):
-            self.change_y = PLAYER_JUMP_SPEED
-            self.jump_state = 1
         if self.jumping:
             if self.jump_state <= 6 and self.change_y == 0:
                 self.jump_state += 1
@@ -140,7 +133,7 @@ class MyGame(arcade.Window):
         self.collect_coin_sound = arcade.load_sound(":resources:sounds/coin1.wav")
         self.jump_sound = arcade.load_sound(":resources:sounds/jump1.wav")
 
-        arcade.set_background_color(arcade.csscolor.CORNFLOWER_BLUE)
+        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
 
 
     def setup(self):
