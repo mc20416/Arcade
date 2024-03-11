@@ -66,6 +66,13 @@ class PlayerCharacter(arcade.Sprite):
         if self.jump_state == 6:
             self.change_y = PLAYER_JUMP_SPEED
             self.jump_state = 1
+        tile_hit_list = arcade.check_for_collision_with_list(
+            self, self.scene["Platforms"]
+        )
+        
+        if len(tile_hit_list) == 1 and (self.center_x % 32 == 1 or self.center_x % 32 == 31):
+            self.change_y = PLAYER_JUMP_SPEED
+            self.jump_state = 1
         if self.jumping:
             if self.jump_state <= 6 and self.change_y == 0:
                 self.jump_state += 1
@@ -73,7 +80,6 @@ class PlayerCharacter(arcade.Sprite):
                 set_hit_box = []
                 for i in range(0, len(self.texture.hit_box_points)):
                     set_hit_box.append(list(self.texture.hit_box_points[i]))
-                print(set_hit_box)
                 set_hit_box[0][0] = set_hit_box[3][0] = -64
                 set_hit_box[1][0] = set_hit_box[2][0] = 64
                 self.hit_box = tuple(set_hit_box)
@@ -84,7 +90,6 @@ class PlayerCharacter(arcade.Sprite):
             set_hit_box = []
             for i in range(0, len(self.texture.hit_box_points)):
                 set_hit_box.append(list(self.texture.hit_box_points[i]))
-            print(set_hit_box)
             set_hit_box[0][0] = set_hit_box[3][0] = -64
             set_hit_box[1][0] = set_hit_box[2][0] = 64
             self.hit_box = tuple(set_hit_box)
@@ -319,9 +324,6 @@ class MyGame(arcade.Window):
         coin_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.scene["Coins"]
         )
-
-        #if arcade.check_for_collision_with_list(self.player_sprite, self.scene["Platforms"]) != []:
-            #self.player_sprite.center_x -= self.player_sprite.center_x % 32
 
         # For each coin the player has hit, remove the coin, play a sound, and increase the score
         for coin in coin_hit_list:
