@@ -48,7 +48,6 @@ class PlayerCharacter(arcade.Sprite):
 
         # Set the initial texture
         self.texture = self.jump_textures[0][0]
-
         self.hit_box = self.texture.hit_box_points
 
         self.scale = CHARACTER_SCALING
@@ -60,20 +59,23 @@ class PlayerCharacter(arcade.Sprite):
         self.jumping = False
 
     def update_animation(self, delta_time: float = 1 / 60):
-        print(self.jump_state)
         if self.up_pressed:
             self.jumping = True
-        print(self.jumping)
-        print(self.down)
-        if self.jumping and self.down != True:
-            if self.jump_state < 12:
+        else:
+            self.jumping = False
+        if self.jump_state == 6:
+            self.change_y = PLAYER_JUMP_SPEED
+            self.jump_state = 1
+        if self.jumping:
+            if self.jump_state <= 6 and self.change_y == 0:
                 self.jump_state += 1
-                self.texture = self.jump_textures[self.jump_state-1][0]
-            elif self.jump_state == 12:
-                self.down = True
-        elif self.change_y < 0:
+                self.texture = self.jump_textures[self.jump_state - 1][0]   
+                self.hit_box = self.texture.hit_box_points
+        elif self.change_y != 0:
             self.down = False
             self.jump_state = 1
+            self.texture = self.jump_textures[self.jump_state - 1][0]
+            self.hit_box = self.texture.hit_box_points
 
 
 class MyGame(arcade.Window):
@@ -217,6 +219,7 @@ class MyGame(arcade.Window):
         # If the UP key is pressed, make the player jump if it can
         if key == arcade.key.UP:
             self.player_sprite.up_pressed = True
+            self.player_sprite.jump_state = 1
         # If the LEFT key is pressed, make the player move left
         elif key == arcade.key.LEFT:
             self.left_pressed = True
@@ -234,6 +237,8 @@ class MyGame(arcade.Window):
         # If the UP key is released, stop the player's vertical movement
         if key == arcade.key.UP:
             self.player_sprite.up_pressed = False
+            if self.player_sprite.jump_state != 6 and self.physics_engine.can_jump():
+                self.player_sprite.jump_state =  6
 
         # If the LEFT or RIGHT key is released, stop the player's horizontal movement
         if key == arcade.key.LEFT:
@@ -270,12 +275,8 @@ class MyGame(arcade.Window):
         It moves the player, checks for collisions with coins, and positions the camera.
         """
 
-        # Updates the fram counter
+        # Updates the frame counter
         self.frame += 1
-
-        # Checks every frame for a jump input, changes player Y if player is able to jump
-        if self.player_sprite.up_pressed and self.physics_engine.can_jump() and self.player_sprite.down:
-            self.player_sprite.change_y = PLAYER_JUMP_SPEED
 
         # Loop will only activate if acceleration is within the accepted parameters
         if self.acceleration >= -1 and self.acceleration <= 1:
@@ -290,10 +291,14 @@ class MyGame(arcade.Window):
                     self.acceleration = min(self.acceleration + DECELERATION_RATE, 0)
                 else:
                     self.acceleration = max(self.acceleration - DECELERATION_RATE, 0)
-        
-        self.scene.update_animation(delta_time)
 
+        if self.physics_engine.can_jump():
+            self.scene.update_animation(delta_time)
+
+        # Update the player's horizontal speed based on acceleration
         self.update_player_horizontal_speed()
+
+        self.player_sprite.center_x = round(self.player_sprite.center_x)
 
         # Move the player using the physics engine
         self.physics_engine.update()
@@ -317,6 +322,8 @@ class MyGame(arcade.Window):
 
         # Position the camera to center the player
         self.center_camera_to_player()
+
+        print(self.player_sprite.center_x)
 
 def main():
     """
