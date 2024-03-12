@@ -3,12 +3,16 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "cave_game.tmx",
+    "activeFile": "test_real.tmx",
     "expandedProjectPaths": [
         ".",
         "maps"
     ],
     "fileStates": {
+        "black_square.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "cave_game.tmx": {
             "scale": 0.25,
             "selectedLayer": 1,
@@ -51,6 +55,14 @@
         "spritesheet_tiles.tsx": {
             "scaleInDock": 0.25,
             "scaleInEditor": 1
+        },
+        "test_real.tmx": {
+            "scale": 0.125,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 2768,
+                "y": -584
+            }
         }
     },
     "last.imagePath": "H:/13DTP/Python/General/Arcade",
@@ -61,11 +73,13 @@
     "map.tileWidth": 70,
     "map.width": 20,
     "openFiles": [
-        "cave_game.tmx",
-        "spritesheet_tiles.tsx"
+        "black_square.tsx",
+        "test_real.tmx"
     ],
     "project": "platformer_tutorial.tiled-project",
     "recentFiles": [
+        "black_square.tsx",
+        "test_real.tmx",
         "spritesheet_tiles.tsx",
         "cave_game.tmx",
         "industrial.tmx",
